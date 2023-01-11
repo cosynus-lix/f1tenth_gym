@@ -161,6 +161,11 @@ void RaceCar::set_map(std::vector<double> &map, int map_height, int map_width, d
     map_exists = true;
     // std::cout << "Race car - Map Updated." << std::endl;
 }
+// overload for changing map on the fly
+void RaceCar::set_map(const std::vector<double> & map, double free_threshold) {
+  scan_simulator.set_map(map, free_threshold);
+}
+
 
 void RaceCar::reset() {
     if (ego) {

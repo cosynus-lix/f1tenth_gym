@@ -319,6 +319,15 @@ class F110Env(gym.Env, utils.EzPickle):
         new_obs = {}
         return new_obs
 
+    def add_obstacle(self, obstacle_info):
+        add_obstacle_request_proto = sim_requests_pb2.SimRequest()
+        add_obstacle_request_proto.type = 7
+        add_obstacle_request_proto.add_obstacle_request.index = obstacle_info[0]
+        add_obstacle_request_proto.add_obstacle_request.obstacle_size = obstacle_info[1]
+        add_obstacle_request_proto.add_obstacle_request.flag = obstacle_info[2]
+        add_obstacle_request_string = add_obstacle_request_proto.SerializeToString()
+        self.socket.send(add_obstacle_request_string)
+
     def step(self, action):
         # can't step if params not set
         if not self.params_set:

@@ -45,6 +45,7 @@ public:
     RaceCar(double time_step, double mu, double h_cg, double l_r, double cs_f, double cs_r, double I_z, double mass, bool is_ego);
     virtual ~RaceCar();
     void set_map(std::vector<double> &map, int map_height, int map_width, double map_resolution, double origin_x, double origin_y, double free_threshold);
+    void set_map(const std::vector<double> & map, double free_threshold);
     void reset();
     void reset_bypose(Pose2D pose);
     CarObs update_scan();

@@ -137,6 +137,13 @@ message UpdateParamResponse {
     int32 result = 1;
 }
 
+message AddObstacleRequest {
+    // request for adding obstacle (from click in rviz)
+    double index = 1;
+    double obstacle_size = 2;
+    double flag = 3;
+}
+
 message SimRequest {
     // wrapper for all request sent to sim server
     // types of requests: 0 - step the sim
@@ -144,6 +151,7 @@ message SimRequest {
     //                    2 - reset sim
     //                    3 - update params
     //                    4 - reset sim by pose
+    //                    7 - add obstacle (from click in rviz)
     int32 type = 1;
     oneof request {
         StepRequest step_request = 2;
@@ -151,6 +159,7 @@ message SimRequest {
         SimResetRequest reset_request = 4;
         SimResetByPoseRequest reset_bypose_request = 5;
         UpdateParamRequest update_request = 6;
+        AddObstacleRequest add_obstacle_request = 7;
     }
 }
 

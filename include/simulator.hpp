@@ -54,6 +54,13 @@ public:
 	void reset();
     void reset_bypose(std::vector<Pose2D> &poses);
 
+  void modify_map(int index, int obstacle_size, int flag);
+  std::vector<int> ind_2_rc(int ind);
+  int rc_2_ind(int r, int c);
+  std::vector<int> coord_2_cell_rc(double x, double y);
+  std::vector<double> cell_rc_2_coord(int r, int c);
+  void add_obs(int index, int obstacle_size, int flag);
+
 private:
 	// sim constants
     // time step
@@ -72,7 +79,7 @@ private:
     double car_length = 0.58;
     double scan_distance_to_base_link = 0.275;
     double wheel_base = 0.3302;
-    
+
     // all agents have the same map
     std::vector<double> map;
     int map_height, map_width;

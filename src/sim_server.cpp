@@ -288,6 +288,11 @@ int main(int argc, char const *argv[]) {
             // send reset response
             socket.send(reset_response);
 
+        } else if (request_type == 7) {
+          int index = sim_request_proto.add_obstacle_request().index();
+          int obstacle_size = sim_request_proto.add_obstacle_request().obstacle_size();
+          int flag = sim_request_proto.add_obstacle_request().flag();
+          sim.modify_map(index, obstacle_size, flag);
         }
     }
     return 0;

@@ -35,6 +35,8 @@
 
 #include "simulator.hpp"
 #include "gjk.hpp"
+#include<stdio.h>
+
 using namespace racecar_simulator;
 
 StandaloneSimulator::StandaloneSimulator(int num_cars, double timestep, double mu, double h_cg, double l_r, double cs_f, double cs_r, double I_z, double mass) {
@@ -82,6 +84,49 @@ void StandaloneSimulator::set_map(std::vector<double> map, int map_height, int m
     // std::cout << "Simulator - Map Updated for Racear Instances." << std::endl;
 
     map_exists = true;
+}
+
+// helper functions, copied from: https://github.com/f1tenth/f1tenth_simulator
+std::vector<int> StandaloneSimulator::ind_2_rc(int ind) {
+    std::vector<int> rc;
+    int row = (floor)(ind/this->map_width);
+    int col = (int)(ind%this->map_width);
+    rc.push_back(row);
+    rc.push_back(col);
+    return rc;
+}
+std::vector<double> StandaloneSimulator::cell_rc_2_coord(int r, int c) {
+    std::vector<double> xy;
+    xy.push_back(c*this->map_resolution + this->origin_x);
+    xy.push_back(r*this->map_resolution + this->origin_y);
+    return xy;
+}
+void StandaloneSimulator::add_obs(int index, int obstacle_size, int flag) {
+    std::vector<int> rc = ind_2_rc(index);
+    for (int i=-obstacle_size; i<=obstacle_size; i++) {
+        for (int j=-obstacle_size; j<=obstacle_size; j++) {
+            int current_r = rc[0]+i;
+            int current_c = rc[1]+j;
+            int current_ind = current_r*this->map_width + current_c;
+            if (flag==0) this->map[current_ind] = 0;
+            if (flag==1) this->map[current_ind] = 100;
+        }
+    }
+}
+// modify map according to the given position of the obstacle
+void StandaloneSimulator::modify_map(int index, int obstacle_size, int flag) {
+  if (map_exists) {
+    std::vector<int> rc = ind_2_rc(index);
+    std::vector<double> xy = cell_rc_2_coord(rc[0], rc[1]);
+    if (flag==0)
+      printf("(backend: simulator) remove old obstable @ pos: (%0.3f, %0.3f)\n\n", xy[0], xy[1]);
+    else if (flag==1)
+      printf("(backend: simulator) add new obstable @ pos: (%0.3f, %0.3f)\n\n", xy[0], xy[1]);
+    add_obs(index, obstacle_size, flag);
+    for (RaceCar &agent : agents) {
+        agent.set_map(this->map, this->free_threshold);
+    }
+  }
 }
 
 void StandaloneSimulator::update_params(double mu, double h_cg, double l_r, double cs_f, double cs_r, double I_z, double mass) {
